@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Size Solution</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="image compresser , image size reduced ,compresser , size solution ,">
+    <meta name="description" content="Solution for the large size images">
+    <meta name="author" content="Bashar Alam">
+    <style>
+        body{
+            background-image: url('sunset-ocean-picjumbo-com.jpg');background-size:auto;background-repeat: no-repeat;overflow: auto;
+        }
+        .upload_container{
+            position: absolute;left: 50%;top: 1%;transform: translate(-50%);width: 50%;height: 40%;text-align: center;margin-top: 5%;
+        }
+        #upload_file_inp{
+            position:absolute;top: 0%;bottom: 0%;right: 0%;left: 0%;border-style: none;opacity: 1%;outline: none;
+        }
+        #file_upload_btn{
+            width:100%;height: 100%;text-align: center;position: relative;background-color: rgba(255, 255, 255, 0.196);border-style:dashed;outline: none;
+        }
+        .dwonload_btn{
+            margin-top: 15%;background-color: red;border-style: none;padding: 1% 2% 1% 2%;margin-bottom: 10%;
+        }
+        input[type="range"] {
+            display: block;-webkit-appearance: none;background-color:black;width: 50%;height: 5px;border-radius: 5px;margin: 3% auto;outline: 0;
+        }
+        #file_upload_title{
+            font-size: 2vw;
+        }
+        .level_title{
+            font-size: 2vw;
+        }
+        .clear_btn{
+            margin-top: 15%;background-color:green;border-style: none;padding: 1% 4% 1% 4%;margin-bottom: 10%;
+        }
+        #original_size{
+            color:white;background-color:rgba(255, 255, 255, 0.709);margin: 0px;padding: 3%;font-size: 1.5vw
+        }
+        #priview_size{
+            color:white;background-color:rgba(249, 244, 244, 0.681);margin: 0px;padding: 3%;font-size: 1.5vw;
+        }
+        #blur{
+            width: 100%;height: 100%;position: absolute;backdrop-filter: blur(4px);top: 0%;left: 0%;display: none;
+        }
+        #loader {
+            position: absolute;border: 10px solid #f3f3f3;border-radius: 50%;border-top: 10px solid #3498db;width:8%;height:20.8%;-webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite; top: 40%;
+            left: 45%;transform: translate(-40%,-45%);display: none;z-index: 1;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media screen and (max-width: 550px) {
+            .font{
+                font-size: 100%;
+            }
+            .level_title{
+                font-size: 90%;
+            }
+            .upload_container{
+                height: 30%;
+                width: 70%;
+                top:8%
+            }
+            input[type="range"] {
+            width: 100%;
+            margin: 10% auto;
+        }
+        #upload_file_inp{
+            opacity: 1%;
+        }
+        .dwonload_btn{
+            margin-top: 25%;
+        }
+        .clear_btn{
+            padding:1% 8% 1% 8%;
+        }
+        .size_font{
+            font-size: 2vw;
+        }
+        }
+    </style>
+</head>
+<body>
+        <div class="upload_container">
+            <p  > <span  class="level_title" >Compressing Level</span><input  type="range" min="0" max="100" step="1" value="50"><span id="percentage" class="level_title">50</span></p>
+            <button id="file_upload_btn" type="button"><img src="upload-image-icon.svg" width="10%" id="img_logo" style="margin-bottom: 2%;"  alt="loading"> <br> <span  id="file_upload_title" class="font">Drag Your File Here</span><input id="upload_file_inp" style="opacity: 1%;" type="file">
+                <div id="loader"></div>
+                <div id="blur"></div>
+            </button>
+            <div id="images_cont" style="display: flex;height: 80%;margin-top: 0%;display: none;">
+                <div id="original_img_cont" style="width: 50%; background-color: black;height: 120%;overflow: hidden;">
+                    <p id="original_size" class="size_font"></p>
+                    <img id="original_img"   style="object-fit:cover;max-width:100vw;height:100vh"  alt="loading">
+                </div>
+                <div id="priview_img_cont" style="width: 50%; background-color: black;height: 120%;overflow: hidden;">
+                    <p id="priview_size" class="size_font" ></p>
+                </div>
+            </div>
+            <button id="dwonloadbtn" class="dwonload_btn"><a id="dwonload_link_btn" style="text-decoration: none;color: black;" download>Dwonload</a></button>
+            <button class="clear_btn" onclick="clear_file()">Clear</button>
+        </div>
+        <script>
+            let MAX_WIDTH ;
+            let MAX_HEIGHT ;
+            const mime_type = "image/png";
+            const quality = 0.1
+            const original_file_size = document.getElementById('original_size')
+            let image_cont = document.getElementById('images_cont')
+            const original_img_cont = document.getElementById('original_img_cont')
+            let original_img = document.getElementById('original_img')
+            const priview_img_cont = document.getElementById('priview_img_cont')
+            let priview_size = document.getElementById('priview_size')
+            let inputfile = document.getElementById('upload_file_inp')
+            let download_btn = document.getElementById('dwonload_link_btn')
+            let set_percentage = document.querySelector('input[type="range"]');
+            const canvas = document.createElement('canvas')
+            let loader = document.getElementById('loader')
+            let file_upload_btn = document.getElementById('file_upload_btn')
+            let blur_box =  document.getElementById('blur')
+            let newpercentage = set_percentage.value;
+            inputfile.onchange = function(ev){
+                loading(true)
+                const upload_file = ev.target.files[0];
+                const blobURL = URL.createObjectURL(upload_file);   // this is for creating the src of teh dummy image 
+                const img = new Image();  //creating the dumm image 
+                img.src = blobURL   //defining the dummm image src 
+                original_img.src = blobURL
+                img.onload = function(){
+                    setting_size_percentage(img)
+                    // now when the dummy image get readdy then 
+                    const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);  //function which takes the original size of the image file fron the dummmy image and retrun the compressed size 
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                    loading(false)
+                    document.getElementById('file_upload_btn').style.display = 'none'
+                    image_cont.style.display = 'block'
+                    image_cont.style.display = 'flex'
+                    priview_img_cont.append(canvas);  //appending the compressed image 
+                    let newImageData = canvas.toDataURL(mime_type, quality);  //now creating the src from the canvas which is compressed for the dwonload link 
+                    download_btn.href = newImageData  //assigning the new src to the dwonload btn for dwonloading the image 
+                    download_btn.download = "IMAGE.PNG"; // this is for the name of the dwonloading 
+                    canvas.toBlob((blob) => {
+                        original_file_size.innerHTML = display_image_information("Before",upload_file)
+                        priview_size.innerHTML =  display_image_information("After",blob)
+                        },
+                        mime_type,quality
+                    );
+                }
+            }
+            const  rangeValue = function(){
+                newpercentage = set_percentage.value;
+                let target = document.getElementById('percentage')
+                target.innerHTML = newpercentage;
+            }
+            set_percentage.addEventListener("input", rangeValue);
+            const setting_size_percentage = function(main_image){
+                const madeWidth = (main_image.width / 100 * newpercentage)
+                const madeHeight = (main_image.height / 100 * newpercentage)
+                MAX_WIDTH = madeWidth
+                MAX_HEIGHT - madeHeight
+            }
+            function calculateSize(img, maxWidth, maxHeight) {
+                let width = img.width;
+                let height = img.height;
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = Math.round((width * maxHeight) / height);
+                        height = maxHeight;
+                    }
+                }
+                return [width, height];
+            }
+            function display_image_information(label,imageFile){
+                const image_size_inkb = readableBytes(imageFile.size)
+                const info = `${label} - ${image_size_inkb}`;
+                return info
+            }
+            function readableBytes(bytes) {
+                const i = Math.floor(Math.log(bytes) / Math.log(1024)),
+                sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+            }
+            const clear_file = function(){
+                inputfile.value = ''
+                image_cont.style.display = 'none'
+                document.getElementById('file_upload_btn').style.display = 'block'
+                original_img.setAttribute('src','')
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                loader.style.display = 'none'
+                blur_box.style.display = 'none'
+            }
+            const loading = function(signal){
+                if(signal = true){
+                    blur_box.style.display = 'block'
+                    loader.style.display = 'block'
+                }
+                else{
+                    loader.style.display = 'none'
+                    blur_box.style,display = 'none'
+                }
+            }
+        </script>
+        
+    
+</body>
+</html>

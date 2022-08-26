@@ -10,13 +10,14 @@
     <meta name="author" content="Bashar Alam">
     <style>
         body{
-            background-image: url('sunset-ocean-picjumbo-com.jpg');background-size:auto;background-repeat: no-repeat;overflow: auto;
+            background-image: url('images/IMAGE (6).PNG');background-size:auto;background-repeat: no-repeat;overflow: auto;
         }
         .upload_container{
             position: absolute;left: 50%;top: 1%;transform: translate(-50%);width: 50%;height: 40%;text-align: center;margin-top: 5%;
         }
         #upload_file_inp{
-            position:absolute;top: 0%;bottom: 0%;right: 0%;left: 0%;border-style: none;opacity: 1%;outline: none;
+            position:absolute;top: 0%;bottom: 0%;right: 0%;left: 0%;border-style: none;
+            opacity: 0 !important;outline: none;
         }
         #file_upload_btn{
             width:100%;height: 100%;text-align: center;position: relative;background-color: rgba(255, 255, 255, 0.196);border-style:dashed;outline: none;
@@ -46,8 +47,13 @@
             width: 100%;height: 100%;position: absolute;backdrop-filter: blur(4px);top: 0%;left: 0%;display: none;
         }
         #loader {
-            position: absolute;border: 10px solid #f3f3f3;border-radius: 50%;border-top: 10px solid #3498db;width:8%;height:20.8%;-webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite; top: 40%;
-            left: 45%;transform: translate(-40%,-45%);display: none;z-index: 1;
+            position: absolute;border: 0.6vw solid #f3f3f3;border-radius: 50%;border-top: 0.6vw solid #3498db;
+            width: 3vw;
+            height: 3vw;
+            -webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite; top: 40%;
+            left: 46%;transform: translate(-40%,-46%);
+            display: none;
+            z-index: 1;
         }
         @-webkit-keyframes spin {
             0% { -webkit-transform: rotate(0deg); }
@@ -57,7 +63,7 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        @media screen and (max-width: 550px) {
+        @media screen and (max-width: 700px) {
             .font{
                 font-size: 100%;
             }
@@ -72,26 +78,30 @@
             input[type="range"] {
             width: 100%;
             margin: 10% auto;
-        }
-        #upload_file_inp{
-            opacity: 1%;
-        }
-        .dwonload_btn{
-            margin-top: 25%;
-        }
-        .clear_btn{
-            padding:1% 8% 1% 8%;
-        }
-        .size_font{
-            font-size: 2vw;
-        }
+            }
+            #loader{
+                position: absolute;border: 2vw solid #f3f3f3;border-radius: 50%;border-top: 2vw solid #3498db;
+                width: 8vw;
+                height: 8vw;
+                left: 42%;
+                transform: translate(-42%);
+            }
+            .dwonload_btn{
+                margin-top: 25%;
+            }
+            .clear_btn{
+                padding:1% 8% 1% 8%;
+            }
+            .size_font{
+                font-size: 2vw;
+            }
         }
     </style>
 </head>
 <body>
         <div class="upload_container">
             <p  > <span  class="level_title" >Compressing Level</span><input  type="range" min="0" max="100" step="1" value="50"><span id="percentage" class="level_title">50</span></p>
-            <button id="file_upload_btn" type="button"><img src="upload-image-icon.svg" width="10%" id="img_logo" style="margin-bottom: 2%;"  alt="loading"> <br> <span  id="file_upload_title" class="font">Drag Your File Here</span><input id="upload_file_inp" style="opacity: 1%;" type="file">
+            <button id="file_upload_btn" type="button"><img src="images/upload-image-icon.svg" width="10%" id="img_logo" style="margin-bottom: 2%;"  alt="loading"> <br> <span  id="file_upload_title" class="font">Drag Your File Here</span><input id="upload_file_inp" type="file">
                 <div id="loader"></div>
                 <div id="blur"></div>
             </button>
